@@ -35,10 +35,14 @@ namespace lab17WpfApp1
                 new FrameworkPropertyMetadata(new PropertyChangedCallback(OnColorRGBChanged)));
             BlueProperty = DependencyProperty.Register("Blue", typeof(byte), typeof(ColorIndicator),
                  new FrameworkPropertyMetadata(new PropertyChangedCallback(OnColorRGBChanged)));
+
+            // Регистрация маршрутизируемого события
+            ColorChangedEvent = EventManager.RegisterRoutedEvent("ColorChanged", RoutingStrategy.Bubble,
+            typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ColorIndicator));
         }
-        public ColorIndicator Color
+        public Color Color
         {
-            get { return (ColorIndicator)GetValue(ColorProperty); }
+            get { return (Color)GetValue(ColorProperty); }
             set { SetValue(ColorProperty, value); }
         }
         public byte Red
@@ -61,7 +65,7 @@ namespace lab17WpfApp1
             DependencyPropertyChangedEventArgs e)
         {
             ColorIndicator colorIndicator = (ColorIndicator)sender;
-            Color color = ColorIndicator.Color;
+            Color color = colorIndicator.Color;
             if (e.Property == RedProperty)
                 color.R = (byte)e.NewValue;
             else if (e.Property == GreenProperty)
@@ -81,9 +85,7 @@ namespace lab17WpfApp1
             colorpicker.Blue = newColor.B;
         }
         public static readonly RoutedEvent ColorChangedEvent;
-        // Регистрация маршрутизируемого события
-        ColorChangedEvent = EventManager.RegisterRoutedEvent("ColorChanged",RoutingStrategy.Bubble,
-        typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ColorIndicator));
+        
 
         public event RoutedPropertyChangedEventHandler<Color> ColorChanged
         {
